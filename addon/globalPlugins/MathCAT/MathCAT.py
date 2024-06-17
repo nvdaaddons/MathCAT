@@ -91,6 +91,7 @@ def getLanguageToUse(mathMl: str) -> str:
     except Exception as e:
         log.error(e)
 
+    # log.info(f"getLanguageToUse: {mathCATLanguageSetting}")
     if mathCATLanguageSetting != "Auto":
         return mathCATLanguageSetting
 
@@ -278,6 +279,7 @@ class MathCATInteraction(mathPres.MathInteractionNVDAObject):
                     "alt" in modNames,
                     False,
                 )
+                # log.info(f"Navigate speech for {gesture.vkCode}/(s={'shift' in modNames}, c={'control' in modNames}): '{text}'")
                 speech.speak(ConvertSSMLTextForNVDA(text, self._language))
 
             # update the braille to reflect the nav position (might be excess code, but it works)
@@ -306,33 +308,33 @@ class MathCATInteraction(mathPres.MathInteractionNVDAObject):
     )
     def script_rawdataToClip(self, gesture: KeyboardInputGesture):
         try:
-            mathml = libmathcat.GetNavigationMathML()[0]
-            if not re.match(self._startsWithMath, mathml):
-                mathml = (
-                    "<math>\n" + mathml + "</math>"
-                )  # copy will fix up name spacing
-            elif self.init_mathml != "":
-                mathml = self.init_mathml
-            copy_as = "mathml"
+            copy_as = "mathml"      # value used even if "CopyAs" pref is invalid
+            text_to_copy = ""
             try:
                 copy_as = libmathcat.GetPreference("CopyAs").lower()
-                match copy_as:
-                    case "mathml" | "latex" | "asciimath":
-                        pass
-                    case _:
-                        copy_as = "mathml"
             except Exception as e:
                 log.error(f"Not able to get 'CopyAs' preference: {e}")
-
-            mathml = self._wrapMathMLForClipBoard(mathml)
-            if copy_as != "mathml":
+            if copy_as == "asciimath" or copy_as == "latex":
+                # save the old braille code, set the new one, get the braille, then reset the code
                 saved_braille_code: str = libmathcat.GetPreference("BrailleCode")
                 libmathcat.SetPreference("BrailleCode", "LaTeX" if copy_as == "latex" else "ASCIIMath")
-                mathml = libmathcat.GetNavigationBraille()
+                text_to_copy = libmathcat.GetNavigationBraille()
                 libmathcat.SetPreference("BrailleCode", saved_braille_code)
-            self._copyToClipAsMathML(mathml, copy_as == "mathml")
+                if copy_as == "asciimath":
+                    copy_as = "ASCIIMath"  # speaks better in at least some voices
+            else:
+                mathml = libmathcat.GetNavigationMathML()[0]
+                if not re.match(self._startsWithMath, mathml):
+                    mathml = (
+                        "<math>\n" + mathml + "</math>"
+                    )  # copy will fix up name spacing
+                elif self.init_mathml != "":
+                    mathml = self.init_mathml
+                text_to_copy = self._wrapMathMLForClipBoard(mathml)
+
+            self._copyToClipAsMathML(text_to_copy, copy_as == "mathml")
             # Translators: copy to clipboard
-            ui.message(_("copy"))
+            ui.message(_("copy as ") + copy_as)
         except Exception as e:
             log.error(e)
             # Translators: this message directs users to look in the log file
@@ -424,6 +426,13 @@ class MathCAT(mathPres.MathPresentationProvider):
     def getSpeechForMathMl(self, mathml: str):
         try:
             self._language = getLanguageToUse(mathml)
+            # MathCAT should probably be extended to accept "extlang" tagging, but it uses lang-region tagging at the moment
+            if self._language == "cmn":
+                self._language = "zh-cmn"
+            elif self._language == "yue":
+                self._language = "zh-yue"
+            # needs to be set before the MathML for DecimalSeparator canonicalization
+            libmathcat.SetPreference("Language", self._language)
             libmathcat.SetMathML(mathml)
         except Exception as e:
             log.error(e)
@@ -444,7 +453,7 @@ class MathCAT(mathPres.MathPresentationProvider):
                 "CapitalLetters_UseWord",
                 "true" if synthConfig["sayCapForCapitals"] else "false",
             )
-            # log.info(f"Speech text: {libmathcat.GetSpokenText()}")
+            # log.info(f"Speech text ({self._language}): {libmathcat.GetSpokenText()}")
             if PitchCommand in supported_commands:
                 libmathcat.SetPreference("CapitalLetters_Pitch", str(synthConfig["capPitchChange"]))
             if self._add_sounds():
@@ -466,7 +475,7 @@ class MathCAT(mathPres.MathPresentationProvider):
         try:
             return libmathcat.GetPreference("SpeechSound") != "None"
         except Exception as e:
-            log.error(f"An exception occurred: {e}")
+            log.error(f"MathCAT: An exception occurred in _add_sounds: {e}")
             return False
 
     def getBrailleForMathMl(self, mathml: str):

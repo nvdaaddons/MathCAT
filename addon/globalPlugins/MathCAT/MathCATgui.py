@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-###########################################################################
-# Python code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
-# http://www.wxformbuilder.org/
-#
-# PLEASE DO *NOT* EDIT THIS FILE!
-###########################################################################
-
 import wx
 # import wx.xrc
 import gettext
@@ -176,6 +167,46 @@ class MathCATPreferencesDialog(wx.Dialog):
 
         bSizerSpeech.Add(bSizerLanguage, 1, wx.EXPAND, 5)
 
+        bSizerDecimalSeparator = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.m_staticTextDecimalSeparator = wx.StaticText(
+            self.m_panelSpeech,
+            wx.ID_ANY,
+            # Translators: label for pull down to specify what character to use in numbers as the decimal separator
+            _("Decimal separator for numbers:"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.m_staticTextDecimalSeparator.Wrap(-1)
+
+        bSizerDecimalSeparator.Add(self.m_staticTextDecimalSeparator, 0, wx.ALL, 5)
+
+        # Translators: options for decimal separator.
+        m_choiceDecimalSeparatorChoices = [
+            # Translators: options for decimal separator -- "Auto" = automatically pick the choice based on the language
+            _("Auto"),
+            # options for decimal separator -- use "."  (and use ", " for block separators)
+            ("."),
+            # options for decimal separator -- use ","  (and use ". " for block separators)
+            (","),
+            # Translators: options for decimal separator -- "Custom" = user sets it
+            #   Currently there is no UI for how it is done yet, but eventually there will be a dialog that pops up to set it
+            _("Custom"),
+        ]
+        self.m_choiceDecimalSeparator = wx.Choice(
+            self.m_panelSpeech,
+            wx.ID_ANY,
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            m_choiceDecimalSeparatorChoices,
+            0,
+        )
+        self.m_choiceDecimalSeparator.SetSelection(0)
+        bSizerDecimalSeparator.Add(self.m_choiceDecimalSeparator, 0, wx.ALL, 5)
+
+        bSizerSpeech.Add(bSizerDecimalSeparator, 1, wx.EXPAND, 5)
+
         bSizerSpeechStyle = wx.BoxSizer(wx.HORIZONTAL)
 
         self.m_staticTextSpeechStyle = wx.StaticText(
@@ -205,7 +236,7 @@ class MathCATPreferencesDialog(wx.Dialog):
 
         bSizerSpeech.Add(bSizerSpeechStyle, 1, wx.EXPAND, 5)
 
-        bSizer71 = wx.BoxSizer(wx.HORIZONTAL)
+        bSizerSpeechAmount = wx.BoxSizer(wx.HORIZONTAL)
 
         self.m_staticTextSpeechAmount = wx.StaticText(
             self.m_panelSpeech,
@@ -218,7 +249,7 @@ class MathCATPreferencesDialog(wx.Dialog):
         )
         self.m_staticTextSpeechAmount.Wrap(-1)
 
-        bSizer71.Add(self.m_staticTextSpeechAmount, 0, wx.ALL, 5)
+        bSizerSpeechAmount.Add(self.m_staticTextSpeechAmount, 0, wx.ALL, 5)
 
         # Translators: options for speech verbosity.
         m_choiceSpeechAmountChoices = [
@@ -238,9 +269,9 @@ class MathCATPreferencesDialog(wx.Dialog):
             0,
         )
         self.m_choiceSpeechAmount.SetSelection(0)
-        bSizer71.Add(self.m_choiceSpeechAmount, 0, wx.ALL, 5)
+        bSizerSpeechAmount.Add(self.m_choiceSpeechAmount, 0, wx.ALL, 5)
 
-        bSizerSpeech.Add(bSizer71, 1, wx.EXPAND, 5)
+        bSizerSpeech.Add(bSizerSpeechAmount, 1, wx.EXPAND, 5)
 
         bSizerRelativeSpeed = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -529,6 +560,43 @@ class MathCATPreferencesDialog(wx.Dialog):
         bSizerNavigationZoom.Add(bSizerSpeechAmountNavigation, 1, wx.EXPAND, 5)
 
         bSizerNavigation.Add(bSizerNavigationZoom, 1, wx.EXPAND, 5)
+
+        bSizerCopyAs = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.m_staticTextCopyMathAs = wx.StaticText(
+            self.m_panelNavigation,
+            wx.ID_ANY,
+            # Translators: label for pull down to specify how math will be copied to the clipboard
+            _("Copy math as:"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.m_staticTextCopyMathAs.Wrap(-1)
+
+        bSizerCopyAs.Add(self.m_staticTextCopyMathAs, 0, wx.ALL, 5)
+
+        # Translators: options for copy math as.
+        m_choiceCopyAsChoices = [
+            # Translators: options for Copy expression to clipboard as -- "MathML"
+            _("MathML"),
+            # Translators: options for Copy expression to clipboard as -- "LaTeX"
+            _("LaTeX"),
+            # Translators: options for Copy expression to clipboard as -- "ASCIIMath"
+            _("ASCIIMath"),
+        ]
+        self.m_choiceCopyAs = wx.Choice(
+            self.m_panelNavigation,
+            wx.ID_ANY,
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            m_choiceCopyAsChoices,
+            0,
+        )
+        self.m_choiceCopyAs.SetSelection(0)
+        bSizerCopyAs.Add(self.m_choiceCopyAs, 0, wx.ALL, 5)
+
+        bSizerNavigation.Add(bSizerCopyAs, 1, wx.EXPAND, 5)
 
         self.m_panelNavigation.SetSizer(bSizerNavigation)
         self.m_panelNavigation.Layout()
