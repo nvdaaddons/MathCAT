@@ -35,8 +35,8 @@ Qui devrait utiliser MathCAT :
 * Ceux qui ont besoin de Nemeth Braille de haute qualité (Nemeth de
   MathPlayer est basé sur la génération Nemeth de liblouis qui a un certain
   nombre de bogues importants qui sont techniquement difficiles à corriger).
-* Those who need UEB technical braille, CMU (Spanish/Portuguese), German
-  LaTeX, ASCIIMath, or Vietnamese braille
+* Ceux qui ont besoin du braille technique UEB, de CMU (espagnol/portugais),
+  du LaTeX allemand, d'ASCIIMath ou du braille vietnamien
 * Ceux qui veulent essayer les dernières technologies et sont prêts à aider
   en signalant des bogues
 * Ceux qui utilisent Eloquence comme voix
@@ -85,21 +85,22 @@ pas encore complètement établi.
 	  utilisée.
 
 * Ajout du suédois aux langues prises en charge.
-* Added more Unicode chars to include both all Unicode chars marked as "Sm"
-  and those with a mathclass (except Alphabetic and Glyph classes) in the
-  Unicode standard.
+* Ajout de nouveaux caractères Unicode, incluant tous ceux marqués comme
+  "Sm" ainsi que ceux ayant une classe mathématique (à l'exception des
+  classes Alphabetic et Glyph) dans le standard Unicode.
 * Après avoir changé le fonctionnement des préfes dans une version
   précédente, j'ai oublié de modifier `Mathrate` et `Pausefactor` afin
   qu'ils soient des nombres, pas des chaînes.
-* Fixed bug in the braille Rules (missed change from earlier) where a third
-  argument should have been given to say to look in the _Braille_
-  `definitions.yaml` files and not the speech ones when looking up the value
-  of a definition.
+* Correction d'un bug dans les règles braille (modification oubliée
+  précédemment) où un troisième argument aurait dû être fourni pour indiquer
+  de rechercher dans les fichiers _Braille_ `definitions.yaml` et non dans
+  ceux de la parole lors de la recherche de la valeur d'une définition.
 * Nettoyage de l'utilisation de `definitions.yaml`.
 * Correction de bugs dans le nettoyage du MathML pour les séparateurs
   décimaux ",".
-* Found a bug in braille highlighting when nothing is highlighted (maybe
-  never happens which is why I didn't see it in practice?)
+* Correction d’un bug dans la mise en évidence braille lorsque rien n’est
+  mis en évidence (ce cas ne se produit peut-être jamais en pratique, ce qui
+  expliquerait pourquoi il n’avait pas été détecté).
 * Correction du mode "Décrire" pour qu'il fonctionne -- il est encore très
   minimaliste et probablement pas encore utile
 * Correction de la version minimale prise en charge
